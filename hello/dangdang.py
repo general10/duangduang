@@ -7,6 +7,10 @@ from datashape import json
 import re
 import json
 import requests
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
+import comment
 
 class bookdata:
     def __init__(self):
@@ -14,7 +18,7 @@ class bookdata:
 
 def getJsonText(url):
     try:
-        r = requests.get(url, timeout=1)
+        r = requests.get(url, timeout=20)
         r.raise_for_status()
         r.encoding = r.apparent_encoding
         return r.text
@@ -23,10 +27,16 @@ def getJsonText(url):
         return ''
 
 def getdata(url):
-    get = urllib2.urlopen(url).read()
+    # header = {
+    #     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit 537.36 (KHTML, like Gecko) Chrome",
+    #     "Accept": "text/html,application/xhtml+xml,application/xml; q=0.9,image/webp,*/*;q=0.8"}
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    referer = 'http://www.zhihu.com/articles'
+    header = {"User-Agent": user_agent, 'Referer': referer}
+    get = requests.get(url, headers = header).text
+    # get = urllib2.urlopen(url).read()
     data = BeautifulSoup(get, 'lxml')
     return data
-
 
 def getId(html):
     id = {}
@@ -66,6 +76,25 @@ def writeinexcel(book,index):
             sheet1.write(i+1, j, book[i].data[index[j]])
 
     wb.save('test.xls')
+
+def writepic(book):
+    color = comment.cnames
+    all = float(len(book))
+    plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
+    plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
+    data = ()
+    sizes = ()
+    colors = ()
+    explode = ()
+    for key in book.keys():
+        data = data + (key,)
+        sizes = sizes + (book[key],)
+        colors = colors + (color.popitem()[0],)
+        explode = explode + (float(book[key])/(all*10),)
+    plt.figure(unicode('图书种类占比', "utf-8"))
+    plt.pie(sizes, explode=explode, labels=data, colors=colors, autopct='%1.1f%%', shadow=True, startangle=50)
+    plt.axis('equal')
+    plt.show()
 
 def getCommentCount(url):
     html = urllib2.urlopen(url).read()
@@ -108,6 +137,16 @@ def printbookinfo(bk):
             + bk.data['好评率']                                         # 好评率
            )
 
+def getkind(book, which):
+    kind = {}
+    for i in range(0,len(book)):
+        kind[book[i].data[which]] = 0
+
+    for i in range(0,len(book)):
+        kind[book[i].data[which]] += 1
+    sorted(kind.items(), key=lambda x: x[1], reverse=True)
+    return kind
+
 if __name__ == '__main__':
     allindex = ['序号', '书名', '出版社', '图书种类', '价格', '折扣', '评论数', '好评', '中评', '差评', '好评率']
     allchoose = [True, True, True, True, True, True, True, True, True, True, True]
@@ -120,7 +159,7 @@ if __name__ == '__main__':
     book = []
     for page in range(1):
 
-        url = 'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-24hours-0-0-1-%d' % (page+1)
+        url = 'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-month-2018-5-1-%d' % (page+1)
         data = getdata(url)
 
         bookname = data.find_all('div', attrs={'class': 'name'})
@@ -130,7 +169,7 @@ if __name__ == '__main__':
         bookoff = data.find_all('span', attrs={'class': 'price_s'})
 
 
-        for i in range(5):
+        for i in range(20):
             bookurl = bookname[i].find('a')['href']
             index1 = page*20+i+1
             bd = getCommentCount(bookurl)
@@ -149,3 +188,7 @@ if __name__ == '__main__':
             book.append(bk)
 
     writeinexcel(book, index)
+
+    kind = getkind(book, '图书种类')
+
+    writepic(kind)
