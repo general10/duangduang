@@ -11,16 +11,6 @@ import requests
 class bookdata:
     def __init__(self):
         self.data = {}
-        self.data['序号'] = ''
-        self.data['书名'] = ''
-        self.data['图书种类'] = ''
-        self.data['价格'] = ''
-        self.data['折扣'] = ''
-        self.data['评论数'] = ''
-        self.data['好评'] = ''
-        self.data['中评'] = ''
-        self.data['差评'] = ''
-        self.data['好评率'] = ''
 
 def getJsonText(url):
     try:
@@ -64,6 +54,19 @@ def getbookkind(str):
             res += i
     return res
 
+def writeinexcel(book,index):
+    wb = xlwt.Workbook()
+    sheet1 = wb.add_sheet("Sheet")
+
+    for i in range(len(index)):
+        sheet1.write(0, i, unicode(index[i], "utf-8"))
+
+    for i in range(0, len(book)):
+        for j in range(len(index)):
+            sheet1.write(i+1, j, book[i].data[index[j]])
+
+    wb.save('test.xls')
+
 def getCommentCount(url):
     html = urllib2.urlopen(url).read()
 
@@ -94,6 +97,7 @@ def getCommentCount(url):
 def printbookinfo(bk):
     print (bk.data['序号'] + ' '
             + bk.data['书名'] + ' '                                     # 书名
+            + bk.data['出版社'] + ' '                                   # 出版社
             + bk.data['图书种类'] + ' '                                 # 图书种类
             + bk.data['价格'] + ' '                                     # 价格
             + bk.data['折扣'] + ' '                                     # 折扣
@@ -105,11 +109,15 @@ def printbookinfo(bk):
            )
 
 if __name__ == '__main__':
-    allindex = {'序号', '书名', '价格', '折扣', '评论数', '好评', '中评', '差评', '好评率'}
-    choose = {True, True, True, True, True, True, True, True, True}
+    allindex = ['序号', '书名', '出版社', '图书种类', '价格', '折扣', '评论数', '好评', '中评', '差评', '好评率']
+    allchoose = [True, True, True, True, True, True, True, True, True, True, True]
+
+    index = []
+    for i in range(0,len(allindex)):
+        if allchoose[i]:
+            index.append(allindex[i])
 
     book = []
-
     for page in range(1):
 
         url = 'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-24hours-0-0-1-%d' % (page+1)
@@ -117,17 +125,19 @@ if __name__ == '__main__':
 
         bookname = data.find_all('div', attrs={'class': 'name'})
         bookstar = data.find_all('div', attrs={'class': 'star'})
+        bookpublish = data.find_all('div', attrs={'class': 'publisher_info'})
         bookprice = data.find_all('div', attrs={'class': 'price'})
         bookoff = data.find_all('span', attrs={'class': 'price_s'})
 
 
-        for i in range(20):
+        for i in range(5):
             bookurl = bookname[i].find('a')['href']
-            index = page*20+i+1
+            index1 = page*20+i+1
             bd = getCommentCount(bookurl)
             bk = bookdata()
-            bk.data['序号'] = str(index)
+            bk.data['序号'] = str(index1)
             bk.data['书名'] = bookname[i].find('a')['title']
+            bk.data['出版社'] = bookpublish[i * 2 + 1].find('a').text
             bk.data['图书种类'] = bd['图书种类']
             bk.data['价格'] = bookprice[i].find('span').text[1:]
             bk.data['折扣'] = bookoff[i].text[:-1]
@@ -138,5 +148,4 @@ if __name__ == '__main__':
             bk.data['好评率'] = str(bd['好评率'])
             book.append(bk)
 
-    for i in range(20):
-        printbookinfo(book[i])
+    writeinexcel(book, index)
