@@ -10,7 +10,17 @@ import requests
 
 class bookdata:
     def __init__(self):
-        data = {}
+        self.data = {}
+        self.data['序号'] = ''
+        self.data['书名'] = ''
+        self.data['图书种类'] = ''
+        self.data['价格'] = ''
+        self.data['折扣'] = ''
+        self.data['评论数'] = ''
+        self.data['好评'] = ''
+        self.data['中评'] = ''
+        self.data['差评'] = ''
+        self.data['好评率'] = ''
 
 def getJsonText(url):
     try:
@@ -73,7 +83,7 @@ def getCommentCount(url):
 
     # 获取评论数
     summary = json_html['data']['list']['summary']
-    comment= {}
+    comment = {}
     comment['好评'] = summary['total_crazy_count']                    # 好评数
     comment['中评'] = summary['total_indifferent_count']              # 中评数
     comment['差评'] = summary['total_detest_count']                   # 差评数
@@ -81,25 +91,26 @@ def getCommentCount(url):
     comment['图书种类'] = bk                                          # 图书种类
     return comment
 
-def main():
+def printbookinfo(bk):
+    print (bk.data['序号'] + ' '
+            + bk.data['书名'] + ' '                                     # 书名
+            + bk.data['图书种类'] + ' '                                 # 图书种类
+            + bk.data['价格'] + ' '                                     # 价格
+            + bk.data['折扣'] + ' '                                     # 折扣
+            + bk.data['评论数'] + ' '                                   # 评论数
+            + bk.data['好评'] + ' '                                     # 好评数
+            + bk.data['中评'] + ' '                                     # 中评数
+            + bk.data['差评'] + ' '                                     # 差评数
+            + bk.data['好评率']                                         # 好评率
+           )
+
+if __name__ == '__main__':
     allindex = {'序号', '书名', '价格', '折扣', '评论数', '好评', '中评', '差评', '好评率'}
-    choose =   {True, True, True, True, True, True, True, True, True}
+    choose = {True, True, True, True, True, True, True, True, True}
 
-    # wb = xlwt.Workbook()
-    # sheet1 = wb.add_sheet("Sheet")
-    # sheet1.write(0, 0, unicode('序号', "utf-8"))
-    # sheet1.write(0, 1, unicode('书名', "utf-8"))
-    # sheet1.write(0, 2, unicode('价格', "utf-8"))
-    # sheet1.write(0, 3, unicode('折扣', "utf-8"))
-    # sheet1.write(0, 4, unicode('评论数', "utf-8"))
-    # sheet1.write(0, 5, unicode('好评', "utf-8"))
-    # sheet1.write(0, 6, unicode('中评', "utf-8"))
-    # sheet1.write(0, 7, unicode('差评', "utf-8"))
-    # sheet1.write(0, 8, unicode('好评率', "utf-8"))
+    book = []
 
-    book = ['']
-
-    for page in range(2):
+    for page in range(1):
 
         url = 'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-24hours-0-0-1-%d' % (page+1)
         data = getdata(url)
@@ -112,30 +123,20 @@ def main():
 
         for i in range(20):
             bookurl = bookname[i].find('a')['href']
-            data = getCommentCount(bookurl)
-            data['书名']
-            print (str(page*20+i+1) + " "
-                    + bookname[i].find('a')['title'] + " "                   # 书名
-                    + data['图书种类'] + " "                                  # 图书种类
-                    + bookprice[i].find('span').text[1:] + " "               # 价格
-                    + bookoff[i].text[:-1] + " "                             # 折扣
-                    + bookstar[i].find('a').text[:-3] + " "                  # 评论数
-                    + data['好评'] + " "                                      # 好评数
-                    + data['中评'] + " "                                      # 中评数
-                    + data['差评'] + " "                                      # 差评数
-                    + data['好评率'] + " "                                    # 好评率
-                   )
+            index = page*20+i+1
+            bd = getCommentCount(bookurl)
+            bk = bookdata()
+            bk.data['序号'] = str(index)
+            bk.data['书名'] = bookname[i].find('a')['title']
+            bk.data['图书种类'] = bd['图书种类']
+            bk.data['价格'] = bookprice[i].find('span').text[1:]
+            bk.data['折扣'] = bookoff[i].text[:-1]
+            bk.data['评论数'] = bookstar[i].find('a').text[:-3]
+            bk.data['好评'] = str(bd['好评'])
+            bk.data['中评'] = str(bd['中评'])
+            bk.data['差评'] = str(bd['差评'])
+            bk.data['好评率'] = str(bd['好评率'])
+            book.append(bk)
 
-            # sheet1.write(page * 20 + i + 1, 0, page * 20 + i + 1)
-            # sheet1.write(page * 20 + i + 1, 1, bookname[i].find('a')['title'])
-            # sheet1.write(page * 20 + i + 1, 2, bookprice[i].find('span').text[1:])
-            # sheet1.write(page * 20 + i + 1, 3, bookoff[i].text[:-1])
-            # sheet1.write(page * 20 + i + 1, 4, bookstar[i].find('a').text[:-3])
-            # sheet1.write(page * 20 + i + 1, 5, data['好评'])
-            # sheet1.write(page * 20 + i + 1, 6, data['中评'])
-            # sheet1.write(page * 20 + i + 1, 7, data['差评'])
-            # sheet1.write(page * 20 + i + 1, 8, data['好评率'])
-            # wb.save('test.xls')
-
-
-main()
+    for i in range(20):
+        printbookinfo(book[i])
