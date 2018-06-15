@@ -1,3 +1,4 @@
+allindex = ['序号', '书名', '出版社', '图书种类', '价格', '折扣', '评论数', '好评', '中评', '差评', '好评率']
 cnames = {
 'aliceblue':            '#F0F8FF',
 'antiquewhite':         '#FAEBD7',

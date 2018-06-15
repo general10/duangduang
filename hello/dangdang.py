@@ -77,7 +77,7 @@ def writeinexcel(book,index):
 
     wb.save('test.xls')
 
-def writepic(book):
+def drawpic(book):
     color = comment.cnames
     all = float(len(book))
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
@@ -139,27 +139,21 @@ def printbookinfo(bk):
 
 def getkind(book, which):
     kind = {}
+
     for i in range(0,len(book)):
         kind[book[i].data[which]] = 0
 
     for i in range(0,len(book)):
         kind[book[i].data[which]] += 1
+
     sorted(kind.items(), key=lambda x: x[1], reverse=True)
     return kind
 
-if __name__ == '__main__':
-    allindex = ['序号', '书名', '出版社', '图书种类', '价格', '折扣', '评论数', '好评', '中评', '差评', '好评率']
-    allchoose = [True, True, True, True, True, True, True, True, True, True, True]
-
-    index = []
-    for i in range(0,len(allindex)):
-        if allchoose[i]:
-            index.append(allindex[i])
-
+def running(num):
     book = []
-    for page in range(1):
+    for page in range(num):
 
-        url = 'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-month-2018-5-1-%d' % (page+1)
+        url = 'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-month-2018-4-1-%d' % (page+1)
         data = getdata(url)
 
         bookname = data.find_all('div', attrs={'class': 'name'})
@@ -167,7 +161,6 @@ if __name__ == '__main__':
         bookpublish = data.find_all('div', attrs={'class': 'publisher_info'})
         bookprice = data.find_all('div', attrs={'class': 'price'})
         bookoff = data.find_all('span', attrs={'class': 'price_s'})
-
 
         for i in range(20):
             bookurl = bookname[i].find('a')['href']
@@ -186,9 +179,24 @@ if __name__ == '__main__':
             bk.data['差评'] = str(bd['差评'])
             bk.data['好评率'] = str(bd['好评率'])
             book.append(bk)
+    return book
 
+def getindex(choose):
+    index = []
+    for i in range(0,len(comment.allindex)):
+        if choose[i]:
+            index.append(comment.allindex[i])
+    return index
+
+
+if __name__ == '__main__':
+    choose = [True, True, True, True, True, True, True, True, True, True, True]
+    # 选择要爬的东西
+    index = getindex(choose)
+    # 开始爬多少页 并存在book中
+    book = running(1)
+    # 写入excel
     writeinexcel(book, index)
-
+    # 找出'图书种类'每种对应的数目 并画图
     kind = getkind(book, '图书种类')
-
-    writepic(kind)
+    drawpic(kind)
