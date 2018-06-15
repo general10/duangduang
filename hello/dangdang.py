@@ -188,7 +188,6 @@ def getindex(choose):
             index.append(comment.allindex[i])
     return index
 
-
 if __name__ == '__main__':
     choose = [True, True, True, True, True, True, True, True, True, True, True]
     # 选择要爬的东西
