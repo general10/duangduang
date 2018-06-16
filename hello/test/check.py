@@ -5,12 +5,12 @@ import matplotlib
 matplotlib.use('TkAgg')
 
 import matplotlib.pyplot as plt
-import hello.comment
+import hello.comments
 
 def write(book):
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
     plt.rcParams['axes.unicode_minus']=False #用来正常显示负号
-    color = hello.comment.cnames
+    color = hello.comments.cnames
     data = ()
     sizes = ()
     colors = ()

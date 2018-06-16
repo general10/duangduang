@@ -10,7 +10,7 @@ import requests
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-import comment
+import comments
 
 class bookdata:
     def __init__(self):
@@ -27,14 +27,7 @@ def getJsonText(url):
         return ''
 
 def getdata(url):
-    # header = {
-    #     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit 537.36 (KHTML, like Gecko) Chrome",
-    #     "Accept": "text/html,application/xhtml+xml,application/xml; q=0.9,image/webp,*/*;q=0.8"}
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-    referer = 'http://www.zhihu.com/articles'
-    header = {"User-Agent": user_agent, 'Referer': referer}
-    get = requests.get(url, headers = header).text
-    # get = urllib2.urlopen(url).read()
+    get = requests.get(url, headers = comments.header).text
     data = BeautifulSoup(get, 'lxml')
     return data
 
@@ -49,8 +42,9 @@ def getId(html):
     return id
 
 def getCommentUrl(id):
-    return 'http://product.dangdang.com/index.php?r=comment%2Flist&productId={productId}&categoryPath={categoryPath}&mainProductId={mainProductId}&mediumId=0&pageIndex=1&sortType=1&filterType=1&isSystem=1&tagId=0&tagFilterCount=0'.format(
-        productId=id['productId'], categoryPath=id['categoryPath'], mainProductId=id['mainProductId'])
+    return comments.bookurltmp.format(productId=id['productId'],
+                                      categoryPath=id['categoryPath'],
+                                      mainProductId=id['mainProductId'])
 
 def getbookkind(str):
     res = ''
@@ -78,7 +72,7 @@ def writeinexcel(book,index):
     wb.save('test.xls')
 
 def drawpic(book):
-    color = comment.cnames
+    color = comments.cnames
     all = float(len(book))
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
     plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
@@ -149,11 +143,11 @@ def getkind(book, which):
     sorted(kind.items(), key=lambda x: x[1], reverse=True)
     return kind
 
-def running(num):
+def running(rankurl, num):
     book = []
     for page in range(num):
 
-        url = 'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-month-2018-4-1-%d' % (page+1)
+        url = rankurl % (page+1)
         data = getdata(url)
 
         bookname = data.find_all('div', attrs={'class': 'name'})
@@ -162,7 +156,7 @@ def running(num):
         bookprice = data.find_all('div', attrs={'class': 'price'})
         bookoff = data.find_all('span', attrs={'class': 'price_s'})
 
-        for i in range(20):
+        for i in range(5):
             bookurl = bookname[i].find('a')['href']
             index1 = page*20+i+1
             bd = getCommentCount(bookurl)
@@ -183,19 +177,22 @@ def running(num):
 
 def getindex(choose):
     index = []
-    for i in range(0,len(comment.allindex)):
+    for i in range(0, len(comments.allindex)):
         if choose[i]:
-            index.append(comment.allindex[i])
+            index.append(comments.allindex[i])
     return index
+
+def draw(book):
+    kind = getkind(book, '图书种类')
+    drawpic(kind)
 
 if __name__ == '__main__':
     choose = [True, True, True, True, True, True, True, True, True, True, True]
     # 选择要爬的东西
     index = getindex(choose)
     # 开始爬多少页 并存在book中
-    book = running(1)
+    book = running(comments.ranksurl[1],1)
     # 写入excel
     writeinexcel(book, index)
-    # 找出'图书种类'每种对应的数目 并画图
-    kind = getkind(book, '图书种类')
-    drawpic(kind)
+    # 画图
+    draw(book)

@@ -1,4 +1,18 @@
+# -*- coding: utf-8 -*
+
 allindex = ['序号', '书名', '出版社', '图书种类', '价格', '折扣', '评论数', '好评', '中评', '差评', '好评率']
+
+header = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit 537.36 (KHTML, like Gecko) Chrome",
+    "Accept": "text/html,application/xhtml+xml,application/xml; q=0.9,image/webp,*/*;q=0.8"
+}
+
+ranksurl = ['http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-24hours-0-0-1-%d',
+        'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-month-2018-5-1-%d',
+        'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-year-2017-0-1-%d']
+
+bookurltmp = 'http://product.dangdang.com/index.php?r=comment%2Flist&productId={productId}&categoryPath={categoryPath}&mainProductId={mainProductId}&mediumId=0&pageIndex=1&sortType=1&filterType=1&isSystem=1&tagId=0&tagFilterCount=0'
+
 cnames = {
 'aliceblue':            '#F0F8FF',
 'antiquewhite':         '#FAEBD7',
