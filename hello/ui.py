@@ -2,12 +2,9 @@
 
 from ScrolledText import ScrolledText
 from Tkinter import *
-
-from numpy.core.umath import pi
-from numpy.ma import arange, sin
-
 import dangdang
 import comments
+# import matest
 
 import sys
 import matplotlib
@@ -152,15 +149,47 @@ kindchoose8 = Checkbutton(root, text=comments.allindex[10], variable=cnumall)
 kindchoose8.grid(row=1, column=8, sticky='w', padx=5)
 
 button = Button(root, text='开始', font=('微软雅黑', 10),command=start)
-button.grid(row=0, column=5, columnspan=2,padx=10)
+button.grid(row=0, column=5, padx=10)
 
 button = Button(root, text='写入excel', font=('微软雅黑', 10),command=writeinexcel(thisbook))
-button.grid(row=0, column=6, columnspan=2,padx=10)
+button.grid(row=0, column=6, padx=10)
 
-# button = Button(root, text='分析', font=('微软雅黑', 10),command=draw())
-# button.grid(row=0, column=7, columnspan=2,padx=10)
+# N = IntVar()
+# entry_N = Entry(root, textvariable=N)
+# entry_N.grid(row=2,column=5, columnspan=5, padx=10,pady=10)
+
+figure1 = Figure(figsize=(5, 4), dpi=100)
+
+canvas = FigureCanvasTkAgg(figure1, root)
+canvas.get_tk_widget().grid(row=2,column=6, columnspan=5, padx=10,pady=10)
+
+def draw():
+    canvas = FigureCanvasTkAgg(figure1, root)
+    canvas.get_tk_widget().grid(row=2,column=5, columnspan=5, padx=10,pady=10)
+    # plt = figure1.add_subplot(111)
+    # book = dangdang.getkind(thisbook, '图书种类')
+    # color = comments.cnames
+    # all = float(len(book))
+    # plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
+    # plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
+    # data = ()
+    # sizes = ()
+    # colors = ()
+    # explode = ()
+    # for key in book.keys():
+    #     data = data + (key,)
+    #     sizes = sizes + (book[key],)
+    #     colors = colors + (color.popitem()[0],)
+    #     explode = explode + (float(book[key]) / (all * 10),)
+    # plt.figure(unicode('图书种类占比', "utf-8"))
+    # plt.pie(sizes, explode=explode, labels=data, colors=colors, autopct='%1.1f%%', shadow=True, startangle=50)
+    # plt.axis('equal')
+    canvas.show()
+
+button = Button(root, text='分析', font=('微软雅黑', 10),command=draw())
+button.grid(row=0, column=7, padx=10)
 
 text = ScrolledText(root, font=('微软雅黑', 10))
-text.grid(row=2,column=0, columnspan=10, padx=10,pady=10)
+text.grid(row=2,column=0, columnspan=6, padx=10,pady=10)
 
 root.mainloop()
