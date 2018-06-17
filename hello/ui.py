@@ -4,13 +4,13 @@ from ScrolledText import ScrolledText
 from Tkinter import *
 import dangdang
 import comments
-# import matest
-
-import sys
-import matplotlib
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg,NavigationToolbar2TkAgg
-from matplotlib.backend_bases import key_press_handler
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+import matplotlib
+matplotlib.use('TkAgg')
+
+from pylab import mpl
+mpl.rcParams['font.sans-serif'] = ['SimHei']
 
 thisbook = []
 
@@ -58,30 +58,30 @@ def getindex(index):
     return index
 
 def start():
+    global thisbook
     print(v.get())
     if v.get()=='1' :
-        book = dangdang.running(comments.ranksurl[0], 1)
+        thisbook = dangdang.running(comments.ranksurl[0], 1)
     if v.get()=='2' :
-        book = dangdang.running(comments.ranksurl[1], 1)
+        thisbook = dangdang.running(comments.ranksurl[1], 1)
     if v.get()=='3' :
-        book = dangdang.running(comments.ranksurl[2], 1)
-    thisbook = book
+        thisbook = dangdang.running(comments.ranksurl[2], 1)
     index = [True,True,True]
     thisindex = dangdang.getindex(getindex(index))
-    for i in range(5):
+    for i in range(20):
         str = ''
 
         for j in thisindex:
-            str += (book[i].data[j] + ' ')
+            str += (thisbook[i].data[j] + ' ')
 
         str += '\n'
         text.insert('end',str)
     # text.insert('end','get');
 
-def writeinexcel(book):
+def writeinexcel():
     index = [True, True, True]
     thisindex = dangdang.getindex(getindex(index))
-    dangdang.writeinexcel(book,thisindex)
+    dangdang.writeinexcel(thisbook,thisindex)
 
 root = Tk()
 root.title('图书查询')
@@ -148,15 +148,11 @@ kindchoose7.grid(row=1, column=7, sticky='w', padx=5)
 kindchoose8 = Checkbutton(root, text=comments.allindex[10], variable=cnumall)
 kindchoose8.grid(row=1, column=8, sticky='w', padx=5)
 
-button = Button(root, text='开始', font=('微软雅黑', 10),command=start)
+button = Button(root, text='开始', font=('微软雅黑', 10), command=start)
 button.grid(row=0, column=5, padx=10)
 
-button = Button(root, text='写入excel', font=('微软雅黑', 10),command=writeinexcel(thisbook))
+button = Button(root, text='写入excel', font=('微软雅黑', 10), command=writeinexcel)
 button.grid(row=0, column=6, padx=10)
-
-# N = IntVar()
-# entry_N = Entry(root, textvariable=N)
-# entry_N.grid(row=2,column=5, columnspan=5, padx=10,pady=10)
 
 figure1 = Figure(figsize=(5, 4), dpi=100)
 
@@ -164,29 +160,27 @@ canvas = FigureCanvasTkAgg(figure1, root)
 canvas.get_tk_widget().grid(row=2,column=6, columnspan=5, padx=10,pady=10)
 
 def draw():
+    print('start')
     canvas = FigureCanvasTkAgg(figure1, root)
     canvas.get_tk_widget().grid(row=2,column=5, columnspan=5, padx=10,pady=10)
-    # plt = figure1.add_subplot(111)
-    # book = dangdang.getkind(thisbook, '图书种类')
-    # color = comments.cnames
-    # all = float(len(book))
-    # plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
-    # plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
-    # data = ()
-    # sizes = ()
-    # colors = ()
-    # explode = ()
-    # for key in book.keys():
-    #     data = data + (key,)
-    #     sizes = sizes + (book[key],)
-    #     colors = colors + (color.popitem()[0],)
-    #     explode = explode + (float(book[key]) / (all * 10),)
-    # plt.figure(unicode('图书种类占比', "utf-8"))
-    # plt.pie(sizes, explode=explode, labels=data, colors=colors, autopct='%1.1f%%', shadow=True, startangle=50)
-    # plt.axis('equal')
+    plt = figure1.add_subplot(111)
+    book = dangdang.getkind(thisbook, '图书种类')
+    color = comments.cnames
+    all = float(len(book))
+    data = ()
+    sizes = ()
+    colors = ()
+    explode = ()
+    for key in book.keys():
+        data = data + (key,)
+        sizes = sizes + (book[key],)
+        colors = colors + (color.popitem()[0],)
+        explode = explode + (float(book[key]) / (all * 10),)
+    plt.pie(sizes, explode=explode, labels=data, colors=colors, autopct='%1.1f%%', shadow=True, startangle=50)
+    plt.axis('equal')
     canvas.show()
 
-button = Button(root, text='分析', font=('微软雅黑', 10),command=draw())
+button = Button(root, text='分析', font=('微软雅黑', 10),command=draw)
 button.grid(row=0, column=7, padx=10)
 
 text = ScrolledText(root, font=('微软雅黑', 10))

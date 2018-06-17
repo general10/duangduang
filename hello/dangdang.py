@@ -156,7 +156,7 @@ def running(rankurl, num):
         bookprice = data.find_all('div', attrs={'class': 'price'})
         bookoff = data.find_all('span', attrs={'class': 'price_s'})
 
-        for i in range(5):
+        for i in range(20):
             bookurl = bookname[i].find('a')['href']
             index1 = page*20+i+1
             bd = getCommentCount(bookurl)
