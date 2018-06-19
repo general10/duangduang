@@ -11,6 +11,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import comments
+import mythread
 
 class bookdata:
     def __init__(self):
@@ -90,33 +91,6 @@ def drawpic(book):
     plt.axis('equal')
     plt.show()
 
-def getCommentCount(url):
-    html = urllib2.urlopen(url).read()
-
-    # 用正则表达式获取对应id
-    id = getId(html)
-
-    # 拼接ajax对应的url
-    json_url = getCommentUrl(id)
-
-    # 获取url对应的json
-    json_html = json.loads(getJsonText(json_url))
-
-    # 获取图书种类
-    data = BeautifulSoup(html, 'lxml')
-    bookkind = data.find_all('span', attrs={'class': 'lie'})[0].text
-    bk = getbookkind(bookkind)
-
-    # 获取评论数
-    summary = json_html['data']['list']['summary']
-    comment = {}
-    comment['好评'] = summary['total_crazy_count']                    # 好评数
-    comment['中评'] = summary['total_indifferent_count']              # 中评数
-    comment['差评'] = summary['total_detest_count']                   # 差评数
-    comment['好评率'] = summary['goodRate']                           # 好评率
-    comment['图书种类'] = bk                                          # 图书种类
-    return comment
-
 def printbookinfo(bk):
     print (bk.data['序号'] + ' '
             + bk.data['书名'] + ' '                                     # 书名
@@ -156,22 +130,29 @@ def running(rankurl, num):
         bookprice = data.find_all('div', attrs={'class': 'price'})
         bookoff = data.find_all('span', attrs={'class': 'price_s'})
 
+        bookurl = {}
+        bd = {}
         for i in range(20):
-            bookurl = bookname[i].find('a')['href']
+            bookurl[i]=bookname[i].find('a')['href']
+
+        bd = mythread.parsebook(bookurl)
+
+        for i in range(20):
+            # bookurl = bookname[i].find('a')['href']
             index1 = page*20+i+1
-            bd = getCommentCount(bookurl)
+            # bd = getCommentCount(bookurl)
             bk = bookdata()
             bk.data['序号'] = str(index1)
             bk.data['书名'] = bookname[i].find('a')['title']
             bk.data['出版社'] = bookpublish[i * 2 + 1].find('a').text
-            bk.data['图书种类'] = bd['图书种类']
+            bk.data['图书种类'] = bd[i]['图书种类']
             bk.data['价格'] = bookprice[i].find('span').text[1:]
             bk.data['折扣'] = bookoff[i].text[:-1]
             bk.data['评论数'] = bookstar[i].find('a').text[:-3]
-            bk.data['好评'] = str(bd['好评'])
-            bk.data['中评'] = str(bd['中评'])
-            bk.data['差评'] = str(bd['差评'])
-            bk.data['好评率'] = str(bd['好评率'])
+            bk.data['好评'] = str(bd[i]['好评'])
+            bk.data['中评'] = str(bd[i]['中评'])
+            bk.data['差评'] = str(bd[i]['差评'])
+            bk.data['好评率'] = str(bd[i]['好评率'])
             book.append(bk)
     return book
 

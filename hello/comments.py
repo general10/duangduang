@@ -7,6 +7,27 @@ header = {
     "Accept": "text/html,application/xhtml+xml,application/xml; q=0.9,image/webp,*/*;q=0.8"
 }
 
+testbookurl = {0: 'http://product.dangdang.com/25137790.html',
+                1: 'http://product.dangdang.com/24198400.html',
+                2: 'http://product.dangdang.com/23444350.html',
+                3: 'http://product.dangdang.com/23967348.html',
+                4: 'http://product.dangdang.com/23778791.html',
+                5: 'http://product.dangdang.com/20039611.html',
+                6: 'http://product.dangdang.com/25093640.html',
+                7: 'http://product.dangdang.com/23523508.html',
+                8: 'http://product.dangdang.com/23427436.html',
+                9: 'http://product.dangdang.com/24026269.html',
+                10: 'http://product.dangdang.com/21005473.html',
+                11: 'http://product.dangdang.com/23808035.html',
+                12: 'http://product.dangdang.com/23990140.html',
+                13: 'http://product.dangdang.com/25218540.html',
+                14: 'http://product.dangdang.com/22880790.html',
+                15: 'http://product.dangdang.com/23761145.html',
+                16: 'http://product.dangdang.com/25171016.html',
+                17: 'http://product.dangdang.com/23822200.html',
+                18: 'http://product.dangdang.com/23751637.html',
+                19: 'http://product.dangdang.com/25062481.html'}
+
 ranksurl = ['http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-24hours-0-0-1-%d',
         'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-month-2018-5-1-%d',
         'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-year-2017-0-1-%d']
