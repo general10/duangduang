@@ -184,6 +184,6 @@ button = Button(root, text='分析', font=('微软雅黑', 10),command=draw)
 button.grid(row=0, column=7, padx=10)
 
 text = ScrolledText(root, font=('微软雅黑', 10))
-text.grid(row=2,column=0, columnspan=6, padx=10,pady=10)
+text.grid(row=2,column=0, columnspan=5, padx=10,pady=10)
 
 root.mainloop()
