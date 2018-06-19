@@ -42,13 +42,6 @@ def getCommentCount(num):
     global result
     result[num] = comment
 
-
-# -*- coding:utf-8 -*-
-
-import threading, thread
-import time
-
-
 class MyThread(threading.Thread):
 
     def __init__(self, target, args):
@@ -59,7 +52,6 @@ class MyThread(threading.Thread):
     def run(self):
         self.target(self.args)
 
-
 def getcomment(counter):
     while counter < 20:
         print "counter = %d" % counter
@@ -67,7 +59,6 @@ def getcomment(counter):
         print(result[counter])
         counter += 2
         # time.sleep(1)
-
 
 def parsebook(thisbook):
     global bookurl

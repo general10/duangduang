@@ -7,12 +7,15 @@ import comments
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import matplotlib
+
 matplotlib.use('TkAgg')
 
 from pylab import mpl
+
 mpl.rcParams['font.sans-serif'] = ['SimHei']
 
 thisbook = []
+
 
 def getindex(index):
     if tszhonglei.get() == '1':
@@ -57,16 +60,17 @@ def getindex(index):
     print(index)
     return index
 
+
 def start():
     global thisbook
     print(v.get())
-    if v.get()=='1' :
+    if v.get() == '1':
         thisbook = dangdang.running(comments.ranksurl[0], 1)
-    if v.get()=='2' :
+    if v.get() == '2':
         thisbook = dangdang.running(comments.ranksurl[1], 1)
-    if v.get()=='3' :
+    if v.get() == '3':
         thisbook = dangdang.running(comments.ranksurl[2], 1)
-    index = [True,True,True]
+    index = [True, True, True]
     thisindex = dangdang.getindex(getindex(index))
     for i in range(20):
         str = ''
@@ -75,45 +79,47 @@ def start():
             str += (thisbook[i].data[j] + ' ')
 
         str += '\n'
-        text.insert('end',str)
+        text.insert('end', str)
     # text.insert('end','get');
+
 
 def writeinexcel():
     index = [True, True, True]
     thisindex = dangdang.getindex(getindex(index))
-    dangdang.writeinexcel(thisbook,thisindex)
+    dangdang.writeinexcel(thisbook, thisindex)
+
 
 root = Tk()
 root.title('图书查询')
 
-hours24=IntVar()
-May=IntVar()
-years2017=IntVar()
+hours24 = IntVar()
+May = IntVar()
+years2017 = IntVar()
 
 whichrank = Label(root, text='你要查询的排行：', font=('微软雅黑', 10))
 whichrank.grid(row=0, column=0, pady=10)
 
-v=StringVar()
+v = StringVar()
 v.set(0)
 
-rankchoose1 = Radiobutton(root, text='24小时内', variable=v,value='1')
-rankchoose1.grid(row=0, column=1, columnspan=5, sticky='w',padx=5)
-rankchoose2 = Radiobutton(root, text='5月份', variable=v,value='2')
-rankchoose2.grid(row=0, column=2, columnspan=5, sticky='w',padx=5)
-rankchoose3 = Radiobutton(root, text='2017年', variable=v,value='3')
-rankchoose3.grid(row=0, column=3, columnspan=5, sticky='w',padx=5)
+rankchoose1 = Radiobutton(root, text='24小时内', variable=v, value='1')
+rankchoose1.grid(row=0, column=1, columnspan=5, sticky='w', padx=5)
+rankchoose2 = Radiobutton(root, text='5月份', variable=v, value='2')
+rankchoose2.grid(row=0, column=2, columnspan=5, sticky='w', padx=5)
+rankchoose3 = Radiobutton(root, text='2017年', variable=v, value='3')
+rankchoose3.grid(row=0, column=3, columnspan=5, sticky='w', padx=5)
 
 whichrank = Label(root, text='你要查询的属性：', font=('微软雅黑', 10))
 whichrank.grid(row=1, column=0, pady=10)
 
-tszhonglei=StringVar()
-price=StringVar()
-zhekou=StringVar()
-ccnt=StringVar()
-cnum1=StringVar()
-cnum2=StringVar()
-cnum3=StringVar()
-cnumall=StringVar()
+tszhonglei = StringVar()
+price = StringVar()
+zhekou = StringVar()
+ccnt = StringVar()
+cnum1 = StringVar()
+cnum2 = StringVar()
+cnum3 = StringVar()
+cnumall = StringVar()
 
 tszhonglei.set(0)
 price.set(0)
@@ -157,12 +163,13 @@ button.grid(row=0, column=6, padx=10)
 figure1 = Figure(figsize=(5, 4), dpi=100)
 
 canvas = FigureCanvasTkAgg(figure1, root)
-canvas.get_tk_widget().grid(row=2,column=6, columnspan=5, padx=10,pady=10)
+canvas.get_tk_widget().grid(row=2, column=6, columnspan=5, padx=10, pady=10)
+
 
 def draw():
     print('start')
     canvas = FigureCanvasTkAgg(figure1, root)
-    canvas.get_tk_widget().grid(row=2,column=5, columnspan=5, padx=10,pady=10)
+    canvas.get_tk_widget().grid(row=2, column=5, columnspan=5, padx=10, pady=10)
     plt = figure1.add_subplot(111)
     book = dangdang.getkind(thisbook, '图书种类')
     color = comments.cnames
@@ -180,10 +187,11 @@ def draw():
     plt.axis('equal')
     canvas.show()
 
-button = Button(root, text='分析', font=('微软雅黑', 10),command=draw)
+
+button = Button(root, text='分析', font=('微软雅黑', 10), command=draw)
 button.grid(row=0, column=7, padx=10)
 
 text = ScrolledText(root, font=('微软雅黑', 10))
-text.grid(row=2,column=0, columnspan=5, padx=10,pady=10)
+text.grid(row=2, column=0, columnspan=5, padx=10, pady=10)
 
 root.mainloop()
