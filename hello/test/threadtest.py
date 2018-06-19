@@ -6,7 +6,7 @@ import hello.dangdang as dd
 import urllib2
 import threading
 import time
-import comments
+import hello.comments
 
 result = {}
 
@@ -71,4 +71,4 @@ def parse(thisbook):
 
 
 if __name__ == '__main__':
-    parse(comments.testbookurl)
+    parse(hello.comments.testbookurl)
