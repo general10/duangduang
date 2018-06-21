@@ -79,7 +79,7 @@ def writeinexcel(book, index):
         for j in range(len(index)):
             sheet1.write(i + 1, j, book[i].data[index[j]])
 
-    wb.save('%s.xls' % addtime)
+    wb.save(excelname)
     aboutmysql.addtable(addtime)
 
 
