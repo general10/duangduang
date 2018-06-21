@@ -7,6 +7,8 @@ header = {
     "Accept": "text/html,application/xhtml+xml,application/xml; q=0.9,image/webp,*/*;q=0.8"
 }
 
+inserttmp = "insert into booklog values (%s,%s)"
+
 testbookurl = {0: 'http://product.dangdang.com/25137790.html',
                1: 'http://product.dangdang.com/24198400.html',
                2: 'http://product.dangdang.com/23444350.html',

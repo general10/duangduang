@@ -5,11 +5,13 @@ from bs4 import BeautifulSoup
 import re
 import requests
 import matplotlib
+import time
 
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import comments
 import mythread
+import aboutmysql
 
 
 class bookdata:
@@ -66,6 +68,8 @@ def getbookkind(str):
 
 def writeinexcel(book, index):
     wb = xlwt.Workbook()
+    addtime = time.strftime("%Y%m%d%H%M%S", time.localtime())
+    excelname = '%s.xls' % addtime
     sheet1 = wb.add_sheet("Sheet")
 
     for i in range(len(index)):
@@ -75,7 +79,9 @@ def writeinexcel(book, index):
         for j in range(len(index)):
             sheet1.write(i + 1, j, book[i].data[index[j]])
 
-    wb.save('test.xls')
+    wb.save('%s.xls' % addtime)
+    aboutmysql.addtable(addtime)
+
 
 
 def drawpic(book):

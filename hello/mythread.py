@@ -56,7 +56,7 @@ def getcomment(counter):
     while counter < 20:
         print "counter = %d" % counter
         getCommentCount(counter)
-        print(result[counter])
+        # print(result[counter])
         counter += 2
         # time.sleep(1)
 
