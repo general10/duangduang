@@ -38,7 +38,7 @@
 
 ### 运行效果
 
-
+![image](https://github.com/general10/duangduang/blob/master/hello/test/pic.jpg)
 
 ---
 
